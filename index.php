@@ -59,7 +59,7 @@ function set_user($where=array())
 	$sql = setStatement($table_name,$where,$new);
 	if($new <> 1)
 	{
-		$sql = $sql." WHERE user_guid=".$user_guid;
+		$sql = $sql." WHERE user_guid='".$user_guid."'";
 	}
 	//$sql = "INSERT INTO user (user_guid,first_name,last_name,email,mobile,password) VALUES('0XPkz','Ankur','Gupta','ankur.gupta.cse0015@gmail.com','09335178784','12345')";
 	if ($conn->query($sql) === TRUE) {
