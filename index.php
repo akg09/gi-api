@@ -72,6 +72,15 @@ function set_user($where=array())
 	$user = get_user($where);
 	return $user;
 }
+//for getting the property list of user
+function get_property_list($where=array())
+{
+	global $conn;
+	$table_name = "property";
+	$sql = getStatement($table_name,$where);
+	$result = $conn->query($sql);
+	return $result;
+}
 function getStatement($table_name,$where)
 {
 	$sql = "SELECT * FROM `".$table_name."`";
