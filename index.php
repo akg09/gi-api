@@ -55,7 +55,7 @@ function set_user($where=array())
 		$user_guid = generateGuid();
 		$where['user_guid'] = $user_guid;
 	}
-	$where = filterKeys($where,$conn);
+	$where = filterKeys($where,$conn,$table_name);
 	$sql = setStatement($table_name,$where,$new);
 	if($new <> 1)
 	{
@@ -73,13 +73,41 @@ function set_user($where=array())
 	return $user;
 }
 //for getting the property list of user
-function get_property_list($where=array())
+function get_property($where=array())
 {
 	global $conn;
 	$table_name = "property";
 	$sql = getStatement($table_name,$where);
 	$result = $conn->query($sql);
 	return $result;
+}
+function set_property($where=array())
+{
+	global $conn;
+	$table_name = "property";
+	$new = 0;
+	$owner_guid = $where['owner_guid'];
+	if(isset($where['new']) && $where['new']== 1)
+	{
+		$new = 1;
+		$project_guid = generateGuid();
+		$where['project_guid'] = $project_guid;
+	}
+	$where = filterKeys($where,$conn,$table_name);
+	$sql = setStatement($table_name,$where,$new);
+	if($new <> 1)
+	{
+		$sql = $sql." WHERE user_guid='".$user_guid."'";
+	}
+	if ($conn->query($sql) === TRUE) {
+		//echo "success";
+	} else {
+		//echo "error";
+	}
+	unset($where);
+	$where['owner_guid'] = $owner_guid;
+	$property = get_property($where);
+	return $property;
 }
 function getStatement($table_name,$where)
 {
@@ -128,10 +156,10 @@ function setStatement($table_name,$where,$new=false)
 	}
 	return $sql;
 }
-function filterKeys($where,$conn)
+function filterKeys($where,$conn,$table_name)
 {
 	$ret = array();
-	$sql = "SHOW COLUMNS FROM user";
+	$sql = "SHOW COLUMNS FROM ".$table_name;
 	$result = $conn->query($sql);
 	if ($result->num_rows > 0) {
 		// output data of each row
